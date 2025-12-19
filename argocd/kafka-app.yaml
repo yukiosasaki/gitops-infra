@@ -8,7 +8,7 @@ spec:
 
   source:
     repoURL: git@github.com:yukiosasaki/gitops-infra.git
-    targetRevision: main.0.1
+    targetRevision: main
     path: kafka
     helm:
       valueFiles:
