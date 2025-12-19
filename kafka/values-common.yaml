@@ -2,7 +2,7 @@ kafka:
   image:
     registry: docker.io
     repository: apache/kafka
-    tag: "3.8.2"
+    tag: "4.1.1"
     pullPolicy: IfNotPresent
 replicaCount: 3
 
