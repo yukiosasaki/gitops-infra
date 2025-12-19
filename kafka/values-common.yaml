@@ -4,6 +4,16 @@ kafka:
     repository: apache/kafka
     tag: "4.1.1"
     pullPolicy: IfNotPresent
+  securityContext:
+    runAsUser: 0
+    fsGroup: 0
+  volumeMounts:
+    - name: kafka-data
+      mountPath: /kafka/data
+  persistence:
+    enabled: true
+    size: 5Gi
+    mountPath: /kafka/data
 replicaCount: 3
 
 kraft:
