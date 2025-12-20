@@ -403,7 +403,11 @@ tls:
 ##   - name: KAFKA_CFG_BACKGROUND_THREADS
 ##     value: "10"
 ##
-extraEnvVars: []
+extraEnvVars: 
+  -name: KAFKA_CFG_PROCESS_ROLES
+   values: "controller,broker"
+  -name: KAFKA_CFG_CONTROLLER_QUORUM_VOTERS
+   values: "0@my-kafka-0.my-kafka-headless:9093"
 ## @param extraEnvVarsCM ConfigMap with extra environment variables
 ##
 extraEnvVarsCM: ""
