@@ -116,7 +116,8 @@ image:
   debug: false
 kraft:
   enabled: true
-
+zookeeper:
+  enabled: false
 ## @param clusterId Kafka Kraft cluster ID (ignored if existingKraftSecret is set). A random cluster ID will be generated the 1st time Kraft is initialized if not set.
 ## NOTE: Already initialized Kafka nodes will use cluster ID stored in their persisted storage.
 ## If reusing existing PVCs, make sure the cluster ID is set matching the stored cluster ID, otherwise new nodes will fail to join the cluster.
