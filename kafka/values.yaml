@@ -96,8 +96,8 @@ serviceBindings:
 ##
 image:
   registry: docker.io
-  repository: bitnamisecure/kafka
-  tag: latest 
+  repository: bitnamilegacy/kafka
+  tag: 3.7.0 
   digest: ""
   ## Specify a imagePullPolicy
   ## ref: https://kubernetes.io/docs/concepts/containers/images/#pre-pulled-images
