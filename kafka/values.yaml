@@ -96,7 +96,7 @@ serviceBindings:
 ##
 image:
   registry: docker.io
-  repository: bitnami/kafka
+  repository: bitnamisecure/kafka
   tag: latest 
   digest: ""
   ## Specify a imagePullPolicy
