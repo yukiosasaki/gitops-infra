@@ -405,9 +405,9 @@ tls:
 ##
 extraEnvVars: 
   -name: KAFKA_CFG_PROCESS_ROLES
-   values: "controller,broker"
+   value: "controller,broker"
   -name: KAFKA_CFG_CONTROLLER_QUORUM_VOTERS
-   values: "0@my-kafka-0.my-kafka-headless:9093"
+   value: "0@my-kafka-0.my-kafka-headless:9093"
 ## @param extraEnvVarsCM ConfigMap with extra environment variables
 ##
 extraEnvVarsCM: ""
