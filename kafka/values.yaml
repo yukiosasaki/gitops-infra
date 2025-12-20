@@ -10,6 +10,7 @@
 ## @param global.imagePullSecrets Global Docker registry secret names as an array
 ## @param global.defaultStorageClass Global default StorageClass for Persistent Volume(s)
 ##
+fullnameOverride: "kafka"
 global:
   imageRegistry: ""
   ## E.g.
@@ -116,6 +117,7 @@ image:
   debug: false
 kraft:
   enabled: true
+  clusgterID: "f4607833-2895-4674-8848-18e9535f6063"
 zookeeper:
   enabled: false
 ## @param clusterId Kafka Kraft cluster ID (ignored if existingKraftSecret is set). A random cluster ID will be generated the 1st time Kraft is initialized if not set.
@@ -407,12 +409,10 @@ tls:
 extraEnvVars: 
   - name: KAFKA_CFG_PROCESS_ROLES
     value: "controller,broker"
-  - name: KAFKA_CFG_CONTROLLER_QUORUM_VOTERS
-    value: "0@my-kafka-0.my-kafka-headless:9093"
   - name: KAFKA_CFG_NODE_ID
     value: "0"
   - name: KAFKA_CFG_CONTROLLER_QUORUM_VOTERS
-    value: "0@my-kafka-controller-0.my-kafka-controller-headless:9093"
+    value: "0"@kafka-controller-0.kafka-controller-headless.kafka.svc.cluster.local:9093"
 ## @param extraEnvVarsCM ConfigMap with extra environment variables
 ##
 extraEnvVarsCM: ""
