@@ -412,7 +412,7 @@ extraEnvVars:
   - name: KAFKA_CFG_NODE_ID
     value: "0"
   - name: KAFKA_CFG_CONTROLLER_QUORUM_VOTERS
-    value: "0"@kafka-controller-0.kafka-controller-headless.kafka.svc.cluster.local:9093"
+    value: "0@kafka-controller-0.kafka-controller-headless.kafka.svc.cluster.local:9093"
 ## @param extraEnvVarsCM ConfigMap with extra environment variables
 ##
 extraEnvVarsCM: ""
