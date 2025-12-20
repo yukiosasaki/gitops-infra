@@ -12,7 +12,7 @@ spec:
     path: kafka
     helm:
       valueFiles:
-        - values-common.yaml
+        - values.yaml
 
   destination:
     server: https://kubernetes.default.svc
