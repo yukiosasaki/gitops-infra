@@ -1173,6 +1173,7 @@ broker:
   ##
   config: 
     process.roles: broker
+    controller.listener.names: "CONTROLLER"
     controller.quorum.voters: 0@kafka-controller-0.kafka-controller-headless.kafka.svc.cluster.local:9093,1@kafka-controller-1.kafka-controller-headless.kafka.svc.cluster.local:9093,2@kafka-controller-2.kafka-controller-headless.kafka.svc.cluster.local:9093
   ## @param broker.overrideConfiguration Kafka configuration override for Kafka broker-only nodes. Values defined here takes precedence over the ones defined at `broker.config`
   ##
