@@ -189,7 +189,7 @@ listeners:
   ## @param listeners.client.sslClientAuth Optional. If SASL_SSL is enabled, configure mTLS TLS authentication type. If SSL protocol is enabled, overrides tls.authType for this listener. Allowed values are 'none', 'requested' and 'required'
   client:
     containerPort: 9092
-    protocol: SASL_PLAINTEXT
+    protocol: PLAINTEXT
     name: CLIENT
     sslClientAuth: ""
   ## @param listeners.controller.name Name for the Kafka controller listener
@@ -200,7 +200,7 @@ listeners:
   controller:
     name: CONTROLLER
     containerPort: 9093
-    protocol: SASL_PLAINTEXT
+    protocol: PLAINTEXT
     sslClientAuth: ""
   ## @param listeners.interbroker.name Name for the Kafka inter-broker listener
   ## @param listeners.interbroker.containerPort Port for the Kafka inter-broker listener
@@ -712,7 +712,7 @@ controller:
     process.roles: "controller"
     controller.listener.names: "CONTROLLER"
     listeners: "CONTROLLER://:9093"
-    listener.security.protocol.map: "CONTROLLER:SASL_PLAINTEXT"
+    listener.security.protocol.map: "CONTROLLER:PLAINTEXT"
     controller.quorum.voters: "0@kafka-controller-0.kafka-controller-headless.kafka.svc.cluster.local:9093,1@kafka-controller-1.kafka-controller-headless.kafka.svc.cluster.local:9093,2@kafka-controller-2.kafka-controller-headless.kafka.svc.cluster.local:9093" 
   ## @param controller.overrideConfiguration Kafka configuration override for Kafka controller-eligible nodes. Values defined here takes precedence over the ones defined at `controller.config`
   ##
@@ -1190,8 +1190,10 @@ broker:
   config:  
     process.roles: "broker"
     controller.listener.names: "CONTROLLER"
+    inter.broker.listener.name: "CLIENT"
+    advertised.listeners: "CLIENT://:9092"
     listeners: "CLIENT://:9092"
-    listener.security.protocol.map: "CLIENT:SASL_PLAINTEXT,CONTROLLER:SASL_PLAINTEXT"
+    listener.security.protocol.map: "CLIENT:PLAINTEXT,CONTROLLER:PLAINTEXT"
     controller.quorum.voters: 0@kafka-controller-0.kafka-controller-headless.kafka.svc.cluster.local:9093,1@kafka-controller-1.kafka-controller-headless.kafka.svc.cluster.local:9093,2@kafka-controller-2.kafka-controller-headless.kafka.svc.cluster.local:9093
   ## @param broker.overrideConfiguration Kafka configuration override for Kafka broker-only nodes. Values defined here takes precedence over the ones defined at `broker.config`
   ##
