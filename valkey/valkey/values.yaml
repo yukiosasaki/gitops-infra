@@ -116,10 +116,10 @@ dataStorage:
   volumeName: "valkey-data"
 
   # Request size (e.g. 5Gi) for dynamically provisioned volume
-  requestedSize: ""
+  requestedSize: 5Gi
 
   # Name of the storage class to use
-  className: ""
+  className: default
 
   # Access modes for the PVC (e.g., ReadWriteOnce, ReadWriteMany)
   accessModes:
