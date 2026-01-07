@@ -119,7 +119,7 @@ dataStorage:
   requestedSize: 5Gi
 
   # Name of the storage class to use
-  className: default
+  className: standard
 
   # Access modes for the PVC (e.g., ReadWriteOnce, ReadWriteMany)
   accessModes:
