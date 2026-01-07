@@ -4,7 +4,7 @@ metadata:
   name: kafka
   namespace: argocd
 spec:
-  project: default
+  project: infra
 
   source:
     repoURL: git@github.com:yukiosasaki/gitops-infra.git
