@@ -235,7 +235,7 @@ replica:
   # Persistence configuration (required for replicas)
   persistence:
     # Size of the PVC for each replica (required when replica.enabled is true)
-    size: 
+    size: 5Gi
     # Storage class name (empty = use default storage class)
     storageClass: ""
     # Access modes for the PVC
