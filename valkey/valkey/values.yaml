@@ -104,7 +104,7 @@ extraInitContainers: []
 # Persistent storage configuration (standalone deployment only)
 dataStorage:
   # Enable persistent volume claim creation
-  enabled: false
+  enabled: true
 
   # Use existing PVC by name (skip dynamic provisioning if set)
   persistentVolumeClaimName: ""
