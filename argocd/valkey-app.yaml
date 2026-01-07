@@ -1,0 +1,22 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: valkey
+  namespace: argocd
+spec:
+  project: infra    
+  source:
+    repoURL: git@github.com:yukiosasaki/gitops-infra.git    
+    targetRevision: main  
+    path: valkey/valkey
+    helm:
+      valueFiles:
+        - values.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: valkey
+  syncPolicy:
+    automated: {} 
+    syncOptions:
+      - CreateNamespace=true
+      
