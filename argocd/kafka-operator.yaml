@@ -1,0 +1,22 @@
+apiVersion: agroproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kafka-Operator
+  namespace: argocd
+spec:
+  project: infra
+  source:
+    repoURL: git@github.com:yukiosasaki/gitops-infra.git
+    targetRevision: main
+    path: kafka-operator
+    helm:
+      valueFiles:
+        - values.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: kafka-operator
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
