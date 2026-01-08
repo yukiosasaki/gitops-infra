@@ -11,13 +11,14 @@ spec:
       kind: 'CustomResourceDefinition'
     - group: '*'
       kind: '*'
+  namespaceResourceWhitelist:
+    - group: '*'
+      kind: '*'
   destinations:
     - namespace: kafka
       server: https://kubernetes.default.svc
     - namespace: valkey
       server: https://kubernetes.default.svc
-  clusterResourceWhitelist:
-    - group: ""
-      kind: Namespace
+  
 
 
