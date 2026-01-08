@@ -6,15 +6,15 @@ metadata:
 spec:
   project: infra
   sources:
-    repoURL: git@github.com:yukiosasaki/gitops-infra.git
-    targetRevision: main
-    path: strimzi-kafka-operator
-    helm:
-      valueFiles:
+    - repoURL: git@github.com:yukiosasaki/gitops-infra.git
+      targetRevision: main
+      path: strimzi-kafka-operator
+      helm:
+        valueFiles:
         - values.yaml
-    epoURL: git@github.com:yukiosasaki/gitops-infra.git
-    targetRevision: main
-    path: manifests
+    - repoURL: git@github.com:yukiosasaki/gitops-infra.git
+      targetRevision: main
+      path: manifests
   destination:
     server: https://kubernetes.default.svc
     namespace: kafka
