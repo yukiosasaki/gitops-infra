@@ -6,11 +6,12 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "5"
     strimzi.io/node-pools: enabled
+    strimizi.io/kraft: "true"
 spec:
   kafka:
     version: 4.1.1
     replicas: 3
-    metadataMode: kraft
+#    metadataMode: kraft
     listeners:
       - name: plain
         port: 9092
