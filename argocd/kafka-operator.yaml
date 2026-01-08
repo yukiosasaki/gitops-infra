@@ -12,6 +12,9 @@ spec:
     helm:
       valueFiles:
         - values.yaml
+    epoURL: git@github.com:yukiosasaki/gitops-infra.git
+    targetRevision: main
+    path: manifests
   destination:
     server: https://kubernetes.default.svc
     namespace: kafka
@@ -24,4 +27,3 @@ spec:
       - CreateNamespace=true
 
       - ServerSideApply=true
-      
