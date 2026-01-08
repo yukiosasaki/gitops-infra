@@ -11,7 +11,7 @@ spec:
     - controller
     - broker
   storage:
-    type: persistenct-claim
+    type: persistent-claim
     size: 5Gi
     class: standard
     deleteClaim: false
