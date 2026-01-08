@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: git@github.com:yukiosasaki/gitops-infra.git
     targetRevision: main
-    path: kafka-operator
+    path: strimzi-kafka-operator
     helm:
       valueFiles:
         - values.yaml
