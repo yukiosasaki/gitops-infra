@@ -1,43 +1,26 @@
 apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaMirrorMaker2
 metadata:
-  name: my-mirror-maker
+  name: mm2-k1-to-k0
   namespace: kafka
 spec:
   version: 3.8.0
   replicas: 1
-  # 【熟考の結論】 target を使いつつ、Operatorにデフォルトトピックを作らせるために
-  # Connect 用の「最低限の識別子」のみを渡します。
+  # 実行場所：k0 / 書き込み先：k0
   target:
     alias: "cluster-k0"
     bootstrapServers: "my-cluster-a-kafka-bootstrap.kafka.svc.cluster.local:9092"
-    # これらを指定することで、Required value エラーを物理的に回避します。
-    # 名前は任意ですが、重複を避けるために一意の名前にします。
-    groupId: "mirrormaker2-group"
-    configStorageTopic: "mirrormaker2-configs"
-    offsetStorageTopic: "mirrormaker2-offsets"
-    statusStorageTopic: "mirrormaker2-status"
-
+    groupId: "mm2-group-k1-to-k0"
+    configStorageTopic: "mm2-configs-k1-to-k0"
+    offsetStorageTopic: "mm2-offsets-k1-to-k0"
+    statusStorageTopic: "mm2-status-k1-to-k0"
   mirrors:
-    # 1. k1 -> k0
     - source:
         alias: "cluster-k1"
-        bootstrapServers: "my-cluster-b-kafka-bootstrap.kafka.svc.k8ssandra-1.mesh.local:9092"
+        bootstrapServers: "my-cluster-kafka-b-bootstrap.kafka.svc.k8ssandra-1.mesh.local:9092"
         config:
           replication.policy.class: "org.apache.kafka.connect.mirror.IdentityReplicationPolicy"
       topicsPattern: ".*\\.subscription\\.notifications"
-      # Connector設定は mirrors 直下ではなく、個別に最小限で定義
       checkpointConnector:
         config:
           checkpoints.topic.replication.factor: 3
-      heartbeatConnector:
-        config:
-          heartbeats.topic.replication.factor: 3
-
-    # 2. k0 -> k1 (双方向)
-    - source:
-        alias: "cluster-k0"
-        bootstrapServers: "my-cluster-a-kafka-bootstrap.kafka.svc.cluster.local:9092"
-        config:
-          replication.policy.class: "org.apache.kafka.connect.mirror.IdentityReplicationPolicy"
-      topicsPattern: ".*\\.subscription\\.notifications"
