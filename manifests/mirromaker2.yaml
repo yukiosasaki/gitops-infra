@@ -37,7 +37,7 @@ spec:
     # 2. k0 -> k1 (双方向)
     - source:
         alias: "cluster-k0"
-        bootstrapServers: "my-cluster-kafka-bootstrap.kafka.svc.cluster.local:9092"
+        bootstrapServers: "my-cluster-a-kafka-bootstrap.kafka.svc.cluster.local:9092"
         config:
           replication.policy.class: "org.apache.kafka.connect.mirror.IdentityReplicationPolicy"
       topicsPattern: ".*\\.subscription\\.notifications"
