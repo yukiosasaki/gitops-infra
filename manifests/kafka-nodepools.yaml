@@ -4,7 +4,7 @@ metadata:
   name: shared-pool
   namespace: kafka
   labels:
-    strimzi.io/cluster: my-cluster # Kafkaリソースの名前と一致させる
+    strimzi.io/cluster: my-cluster-a # Kafkaリソースの名前と一致させる
 spec:
   replicas: 3
   roles:
