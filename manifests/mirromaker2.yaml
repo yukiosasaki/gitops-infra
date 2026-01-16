@@ -17,7 +17,11 @@ spec:
   mirrors:
     - source:
         alias: "cluster-k1"
-        bootstrapServers: "my-cluster-b-kafka-bootstrap.kafka.svc.clusterset.local:9092"
+        bootstrapServers:
+          172.18.0.7:32743,
+          172.18.0.8:32743,
+          172.18.0.9:32743,
+          172.18.0.10:32743
         config:
           replication.policy.class: "org.apache.kafka.connect.mirror.IdentityReplicationPolicy"
       topicsPattern: "subscription.notifications"
