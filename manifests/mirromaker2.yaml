@@ -6,26 +6,27 @@ metadata:
 spec:
   version: 3.8.0
   replicas: 1
-  # 【解決の鍵】connectCluster を使用し、Podの実行基盤（k0）を定義。
-  # これにより、複雑なStorageTopicの手動定義を回避し、デフォルト値に任せることができます。
-  connectCluster: "cluster-k0"
-  
-  # すべての接続先をここに集約。
-  clusters:
-    - alias: "cluster-k0"
-      bootstrapServers: "my-cluster-a-kafka-bootstrap.kafka.svc.cluster.local:9092"
-    - alias: "cluster-k1"
-      bootstrapServers: "my-cluster-kafka-b-bootstrap.kafka.svc.k8ssandra-1.mesh.local:9092"
-  
+  # 【熟考の結論】 target を使いつつ、Operatorにデフォルトトピックを作らせるために
+  # Connect 用の「最低限の識別子」のみを渡します。
+  target:
+    alias: "cluster-k0"
+    bootstrapServers: "my-cluster-a-kafka-bootstrap.kafka.svc.cluster.local:9092"
+    # これらを指定することで、Required value エラーを物理的に回避します。
+    # 名前は任意ですが、重複を避けるために一意の名前にします。
+    groupId: "mirrormaker2-group"
+    configStorageTopic: "mirrormaker2-configs"
+    offsetStorageTopic: "mirrormaker2-offsets"
+    statusStorageTopic: "mirrormaker2-status"
+
   mirrors:
-    # 1. k1 (相手) から k0 (自分) への同期
-    - sourceCluster: "cluster-k1"
-      targetCluster: "cluster-k0"
-      sourceConnector:
+    # 1. k1 -> k0
+    - source:
+        alias: "cluster-k1"
+        bootstrapServers: "my-cluster-b-kafka-bootstrap.kafka.svc.k8ssandra-1.mesh.local:9092"
         config:
           replication.policy.class: "org.apache.kafka.connect.mirror.IdentityReplicationPolicy"
-          topicsPattern: ".*\\.subscription\\.notifications"
-          replication.factor: 3
+      topicsPattern: ".*\\.subscription\\.notifications"
+      # Connector設定は mirrors 直下ではなく、個別に最小限で定義
       checkpointConnector:
         config:
           checkpoints.topic.replication.factor: 3
@@ -33,11 +34,10 @@ spec:
         config:
           heartbeats.topic.replication.factor: 3
 
-    # 2. k0 (自分) から k1 (相手) への同期 (双方向)
-    - sourceCluster: "cluster-k0"
-      targetCluster: "cluster-k1"
-      sourceConnector:
+    # 2. k0 -> k1 (双方向)
+    - source:
+        alias: "cluster-k0"
+        bootstrapServers: "my-cluster-kafka-bootstrap.kafka.svc.cluster.local:9092"
         config:
           replication.policy.class: "org.apache.kafka.connect.mirror.IdentityReplicationPolicy"
-          topicsPattern: ".*\\.subscription\\.notifications"
-          replication.factor: 3
+      topicsPattern: ".*\\.subscription\\.notifications"
