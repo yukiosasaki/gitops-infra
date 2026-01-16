@@ -18,13 +18,15 @@ spec:
     - source:
         alias: "cluster-k1"
         bootstrapServers: "my-cluster-kafka-b-bootstrap.kafka.svc.k8ssandra-1.mesh.local:9092"
-        sourceConnector:
-
-          config:
-            replication.policy.class: "org.apache.kafka.connect.mirror.IdentityReplicationPolicy"
-            replication.factor: 3
-            topics.pattern: "surbscription.notifications"
+        config:
+          replication.policy.class: "org.apache.kafka.connect.mirror.IdentityReplicationPolicy"
       topicsPattern: "subscription.notifications"
+      sourceConnector:
+        config:
+          replication.factor: 3
       checkpointConnector:
         config:
           checkpoints.topic.replication.factor: 3
+      heartbeatConnector:
+        config:
+          heartbeats.topic.replication.factor: 3
