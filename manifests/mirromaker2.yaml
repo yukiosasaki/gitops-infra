@@ -1,0 +1,50 @@
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaMirrorMaker2
+metadata:
+  name: my-mirror-maker
+  namespace: kafka
+  annotations:
+    argocd.argoproj.io/sync-wave: "10"
+spec:
+  version: 3.8.0 # 2026年現在のKRaft安定版
+  replicas: 1
+  connectCluster: "cluster-a" # k1側で実行（k0のデータをk1へ送る場合）
+  clusters:
+    - alias: "cluster-a"
+      bootstrapServers: "my-cluster-a-kafka-bootstrap.kafka.svc.cluster.local:9092"
+    - alias: "cluster-b"
+      bootstrapServers: "my-cluster-b-kafka-bootstrap.kafka.svc.cluster.local:9092"
+  mirrors:
+    - sourceCluster: "cluster-a"
+      targetCluster: "cluster-b"
+      sourceConnector:
+        config:
+          # トピック名をそのまま維持する設定
+          replication.policy.class: "org.apache.kafka.connect.mirror.IdentityReplicationPolicy"
+          # 同期対象トピックの指定
+          topicsPattern: ".*\\.subscription\\.notifications"
+          replication.factor: 3
+          offset-syncs.topic.replication.factor: 3
+      checkpointConnector:
+        config:
+          checkpoints.topic.replication.factor: 3
+      heartbeatConnector:
+        config:
+          heartbeats.topic.replication.factor: 3
+    - sourceCluster: "cluster-b"
+      targetCluster: "cluster-a"
+      sourceConnector:
+        config:
+          # トピック名をそのまま維持する設定
+          replication.policy.class: "org.apache.kafka.connect.mirror.IdentityReplicationPolicy"
+          # 同期対象トピックの指定
+          topicsPattern: ".*\\.subscription\\.notifications"
+          replication.factor: 3
+          offset-syncs.topic.replication.factor: 3
+      checkpointConnector:
+        config:
+          checkpoints.topic.replication.factor: 3
+      heartbeatConnector:
+        config:
+          heartbeats.topic.replication.factor: 3
+
