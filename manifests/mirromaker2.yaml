@@ -4,7 +4,7 @@ metadata:
   name: mm2-k1-to-k0
   namespace: kafka
 spec:
-  version: 3.8.0
+  version: 4.1.1
   replicas: 1
   # 実行場所：k0 / 書き込み先：k0
   target:
