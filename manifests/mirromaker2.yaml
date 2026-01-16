@@ -6,41 +6,26 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "10"
 spec:
-  version: 3.8.0 # 2026年現在のKRaft安定版
+  version: 3.8.0
   replicas: 1
-  connectCluster: "cluster-a" # k1側で実行（k0のデータをk1へ送る場合）
+  # ターゲット(実行場所): cluster-k0 (k8ssandra-0)
+  connectCluster: "cluster-k0"
   clusters:
-    - alias: "cluster-a"
+    - alias: "cluster-k0"
       bootstrapServers: "my-cluster-a-kafka-bootstrap.kafka.svc.cluster.local:9092"
-    - alias: "cluster-b"
-      bootstrapServers: "my-cluster-b-kafka-bootstrap.kafka.svc.cluster.local:9092"
+    - alias: "cluster-k1"
+      # 【重要】相手クラスター(k1)を指名するための専用FQDN
+      bootstrapServers: "my-cluster-b-kafka-bootstrap.kafka.svc.k8ssandra-1.mesh.local:9092"
+
   mirrors:
-    - sourceCluster: "cluster-a"
-      targetCluster: "cluster-b"
+    # A: k1 (相手) から k0 (自分) への同期
+    - sourceCluster: "cluster-k1"
+      targetCluster: "cluster-k0"
       sourceConnector:
         config:
-          # トピック名をそのまま維持する設定
           replication.policy.class: "org.apache.kafka.connect.mirror.IdentityReplicationPolicy"
-          # 同期対象トピックの指定
           topicsPattern: ".*\\.subscription\\.notifications"
           replication.factor: 3
-          offset-syncs.topic.replication.factor: 3
-      checkpointConnector:
-        config:
-          checkpoints.topic.replication.factor: 3
-      heartbeatConnector:
-        config:
-          heartbeats.topic.replication.factor: 3
-    - sourceCluster: "cluster-b"
-      targetCluster: "cluster-a"
-      sourceConnector:
-        config:
-          # トピック名をそのまま維持する設定
-          replication.policy.class: "org.apache.kafka.connect.mirror.IdentityReplicationPolicy"
-          # 同期対象トピックの指定
-          topicsPattern: ".*\\.subscription\\.notifications"
-          replication.factor: 3
-          offset-syncs.topic.replication.factor: 3
       checkpointConnector:
         config:
           checkpoints.topic.replication.factor: 3
@@ -48,3 +33,11 @@ spec:
         config:
           heartbeats.topic.replication.factor: 3
 
+    # B: k0 (自分) から k1 (相手) への同期
+    - sourceCluster: "cluster-k0"
+      targetCluster: "cluster-k1"
+      sourceConnector:
+        config:
+          replication.policy.class: "org.apache.kafka.connect.mirror.IdentityReplicationPolicy"
+          topicsPattern: ".*\\.subscription\\.notifications"
+          replication.factor: 3
