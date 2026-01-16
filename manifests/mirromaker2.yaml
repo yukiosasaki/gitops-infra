@@ -20,7 +20,7 @@ spec:
         bootstrapServers: "my-cluster-kafka-b-bootstrap.kafka.svc.k8ssandra-1.mesh.local:9092"
         config:
           replication.policy.class: "org.apache.kafka.connect.mirror.IdentityReplicationPolicy"
-      topicsPattern: ".*\\.subscription\\.notifications"
+      topicsPattern: "subscription\\.notifications"
       checkpointConnector:
         config:
           checkpoints.topic.replication.factor: 3
