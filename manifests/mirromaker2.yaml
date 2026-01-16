@@ -3,26 +3,29 @@ kind: KafkaMirrorMaker2
 metadata:
   name: my-mirror-maker
   namespace: kafka
-  annotations:
-    argocd.argoproj.io/sync-wave: "10"
 spec:
   version: 3.8.0
   replicas: 1
-  # 【v1必須】Podの実行場所兼、書き込み先を定義
-  target:
-    alias: "cluster-k0"
-    bootstrapServers: "my-cluster-a-kafka-bootstrap.kafka.svc.cluster.local:9092"
+  # 【解決の鍵】connectCluster を使用し、Podの実行基盤（k0）を定義。
+  # これにより、複雑なStorageTopicの手動定義を回避し、デフォルト値に任せることができます。
+  connectCluster: "cluster-k0"
   
-  # 【v1必須】ミラーリングのソース定義
+  # すべての接続先をここに集約。
+  clusters:
+    - alias: "cluster-k0"
+      bootstrapServers: "my-cluster-a-kafka-bootstrap.kafka.svc.cluster.local:9092"
+    - alias: "cluster-k1"
+      bootstrapServers: "my-cluster-kafka-b-bootstrap.kafka.svc.k8ssandra-1.mesh.local:9092"
+  
   mirrors:
-    # 1. k1 -> k0 の同期
-    - source:
-        alias: "cluster-k1"
-        bootstrapServers: "my-cluster-b-kafka-bootstrap.kafka.svc.k8ssandra-1.mesh.local:9092"
-        # IdentityReplicationPolicyはsource.configの中に書くのがv1の流儀
+    # 1. k1 (相手) から k0 (自分) への同期
+    - sourceCluster: "cluster-k1"
+      targetCluster: "cluster-k0"
+      sourceConnector:
         config:
           replication.policy.class: "org.apache.kafka.connect.mirror.IdentityReplicationPolicy"
-      topicsPattern: ".*\\.subscription\\.notifications"
+          topicsPattern: ".*\\.subscription\\.notifications"
+          replication.factor: 3
       checkpointConnector:
         config:
           checkpoints.topic.replication.factor: 3
@@ -30,10 +33,11 @@ spec:
         config:
           heartbeats.topic.replication.factor: 3
 
-    # 2. k0 -> k1 の同期 (双方向)
-    - source:
-        alias: "cluster-k0"
-        bootstrapServers: "my-cluster-a-kafka-bootstrap.kafka.svc.cluster.local:9092"
+    # 2. k0 (自分) から k1 (相手) への同期 (双方向)
+    - sourceCluster: "cluster-k0"
+      targetCluster: "cluster-k1"
+      sourceConnector:
         config:
           replication.policy.class: "org.apache.kafka.connect.mirror.IdentityReplicationPolicy"
-      topicsPattern: ".*\\.subscription\\.notifications"
+          topicsPattern: ".*\\.subscription\\.notifications"
+          replication.factor: 3
