@@ -27,10 +27,10 @@ spec:
       topicsPattern: "subscription\\.notifications"
       sourceConnector:
         config:
-          replication.factor: 3
+          replication.factor: 1
       checkpointConnector:
         config:
-          checkpoints.topic.replication.factor: 3
+          checkpoints.topic.replication.factor: 1
       heartbeatConnector:
         config:
-          heartbeats.topic.replication.factor: 3
+          heartbeats.topic.replication.factor: 1
