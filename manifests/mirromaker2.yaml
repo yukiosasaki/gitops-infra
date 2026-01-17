@@ -24,7 +24,7 @@ spec:
           172.18.0.10:32743
         config:
           replication.policy.class: "DefaultReplicationPolicy"
-      topicsPattern: "subscription.notifications"
+      topicsPattern: "subscription\\.notifications"
       sourceConnector:
         config:
           replication.factor: 3
