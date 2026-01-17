@@ -23,7 +23,7 @@ spec:
           172.18.0.9:32743,
           172.18.0.10:32743
         config:
-          replication.policy.class: "org.apache.kafka.connect.mirror.IdentityReplicationPolicy"
+          replication.policy.class: "DefaultReplicationPolicy"
       topicsPattern: "subscription.notifications"
       sourceConnector:
         config:
