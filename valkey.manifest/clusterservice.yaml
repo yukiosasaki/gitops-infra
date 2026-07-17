@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: valkey-cluster
+  namespace: mx-msg
+  labels:
+    app.kubernetes.io/instance: mx
+    app.kubernetes.io/name: valkey-cluster
+spec:
+  selector:
+    app.kubernetes.io/instance: mx
+    app.kubernetes.io/name: valkey-cluster
+  ports:
+    - name: valkey-cluster
+      protocol: TCP
+      port: 6379
+      targetPort: valkey-cluster
+    - name: tcp-valkey-bus
+      protocol: TCP
+      port: 16379
+      targetPort: tcp-valkey-bus

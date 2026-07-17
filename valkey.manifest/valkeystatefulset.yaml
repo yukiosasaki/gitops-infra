@@ -1,0 +1,107 @@
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: valkey-cluster
+  namespace: mx-msg
+spec:
+  serviceName: "valkey-cluster-headless"
+  replicas: 6
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: mx
+      app.kubernetes.io/name: valkey-cluster
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/instance: mx
+        app.kubernetes.io/name: valkey-cluster
+    spec:
+      terminationGracePeriodSeconds: 20
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 1
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - valkey-cluster
+              topologyKey: kubernetes.io/hostname
+      securityContext:
+        fsGroup: 999
+        runAsUser: 999
+        runAsGroup: 999
+      containers:
+      - name: valkey-cluster
+        image: docker.io/valkey/valkey-bundle:8.1.4
+        env:
+        - name: REDISCLI_AUTH
+          value: "valkeypass"
+        - name: VALKEY_PORT_NUMBER
+          value: "6379"
+        - name: VALKEY_PASSWORD_FILE
+          value: "/etc/valkey-password/valkey-password-file.conf"
+        - name: MY_POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        command:
+          - "valkey-server"
+        args:
+          - "/conf/valkey.conf"
+          - "--cluster-announce-ip"
+          - "$(MY_POD_IP)"
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "100Mi"
+        ports:
+            - name: valkey-cluster
+              containerPort: 6379
+              protocol: "TCP"
+            - name: tcp-valkey-bus
+              containerPort: 16379
+              protocol: "TCP"
+        livenessProbe:
+          exec:
+            command:  [ "sh", "-c", "valkey-cli ping" ]
+        readinessProbe:
+          exec:
+            command:  [ "sh", "-c", "valkey-cli ping" ]
+        securityContext:
+          capabilities:
+            drop:
+              - ALL
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: 999
+        volumeMounts:
+        - name: conf
+          mountPath: /conf
+          readOnly: false
+        - name: data
+          mountPath: /data
+          readOnly: false
+        - name: valkey-password
+          mountPath: /etc/valkey-password
+          readOnly: true
+      volumes:
+      - name: valkey-password
+        secret:
+          secretName: valkey-password-file
+      - name: conf
+        configMap:
+          name: valkey-cluster
+          defaultMode: 0755
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: standard
+      resources:
+        requests:
+          storage: 5Gi
